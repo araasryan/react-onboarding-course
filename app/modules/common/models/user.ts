@@ -5,8 +5,16 @@ export interface UserCredentials {
     password: string;
 }
 
-export interface User extends Partial<UserCredentials> {
-    id?: number;
-    confirmPassword?: string;
-    userRole?: UserRole;
+export interface UserRegisterModel extends UserCredentials {
+    userRole: UserRole;
+    confirmPassword: string;
 }
+
+export interface User {
+    id?: number;
+    login: string;
+    userRole: UserRole;
+    password: string;
+}
+
+export type UserDTO = Pick<User, 'id' | 'login' | 'userRole'>;
