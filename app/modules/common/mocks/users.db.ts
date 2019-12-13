@@ -57,7 +57,7 @@ export class UserContext {
 
     findById(id: number): User | undefined {
         const user = users.find(u => u.id === id);
-        if (!user) {
+        if (user) {
             return cloneDeep(user);
         }
         return undefined;
@@ -79,7 +79,7 @@ export class UserContext {
         return dbUser;
     }
 
-    update(id: number, user: User): User | undefined {
+    update(id: number, user: Partial<User>): User | undefined {
         const userDb = this.findById(id);
         if (!userDb) {
             return undefined;
