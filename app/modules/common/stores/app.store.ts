@@ -21,4 +21,9 @@ export class AppStore {
     get isAuthenticated() {
         return !!this.authUser;
     }
+
+    @computed
+    get user() {
+        return this.authUser;
+    }
 }
