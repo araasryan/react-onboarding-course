@@ -9,10 +9,14 @@ import { AuthApi } from './modules/auth/api/auth.api';
 import { observer } from 'mobx-react';
 import { AppStore } from './modules/common/stores/app.store';
 import { LoginPage } from './modules/auth/components/login-page';
+import { UsersGridPage } from './modules/users/components/users-grid-page';
+import { MainLayout } from './modules/common/components/main-layout';
 
 configure({ enforceActions: 'observed' });
 
-export const App: React.FC = provide({ singletons: [UserContext, AuthApi, AppStore] })(
+export const App: React.FC = provide({
+    singletons: [UserContext, AuthApi, AppStore]
+})(
     observer(() => {
         const [{ isAuthenticated }] = useDependencies(AppStore);
 
@@ -27,14 +31,19 @@ export const App: React.FC = provide({ singletons: [UserContext, AuthApi, AppSto
 );
 
 const Placeholder: React.FC = function() {
-    return <div>Placeholder</div>;
+    return (
+        <MainLayout>
+            <div>Placeholder</div>
+        </MainLayout>
+    );
 };
 
 const AuthenticatedRoutes: React.FC = function() {
     return (
         <Switch>
-            <Route exact path="/user/dashboard" component={Placeholder} />
-            <Redirect to="/user/dashboard" />
+            <Route exact path="/users" component={UsersGridPage} />
+            <Route exact path="/feed" component={Placeholder} />
+            <Redirect to="/users" />
         </Switch>
     );
 };
