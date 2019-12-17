@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Text, Stack } from '@servicetitan/design-system';
+import { Text, Stack, Page } from '@servicetitan/design-system';
 import { ErrorBox } from '../../common/components/error-box';
+import * as Styles from './auth-layout.less';
 
 interface IAuthLayout {
     title: string;
@@ -8,15 +9,16 @@ interface IAuthLayout {
 }
 
 export const AuthLayout: React.FC<IAuthLayout> = ({ children, title, error }) => {
+    console.log(Styles.authFixedWidth);
     return (
         <Stack alignItems="center" justifyContent="center" className="flex-auto">
-            <div style={{ width: '400px' }}>
+            <Page backgroundColor="white" className={Styles.authFixedWidth}>
                 <Text size={4} className="ta-center m-b-4">
                     {title}
                 </Text>
                 <ErrorBox error={error} />
                 {children}
-            </div>
+            </Page>
         </Stack>
     );
 };
