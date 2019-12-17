@@ -1,14 +1,50 @@
 import * as React from 'react';
-import { HashRouter } from 'react-router-dom';
+import { HashRouter, Route, Redirect, Switch } from 'react-router-dom';
+import { configure } from 'mobx';
 
-import { Stack, Text } from '@servicetitan/design-system';
+import { RegisterPage } from './modules/auth/components/register-page';
+import { provide, useDependencies } from '@servicetitan/react-ioc';
+import { UserContext } from './modules/common/mocks/users.db';
+import { AuthApi } from './modules/auth/api/auth.api';
+import { observer } from 'mobx-react';
+import { AppStore } from './modules/common/stores/app.store';
+import { LoginPage } from './modules/auth/components/login-page';
 
-export const App: React.FC = () => (
-    <React.StrictMode>
-        <HashRouter>
-            <Stack alignItems="center" justifyContent="center" className="flex-auto">
-                <Text size={5}>React Onboarding Practice Course Template</Text>
-            </Stack>
-        </HashRouter>
-    </React.StrictMode>
+configure({ enforceActions: 'observed' });
+
+export const App: React.FC = provide({ singletons: [UserContext, AuthApi, AppStore] })(
+    observer(() => {
+        const [{ isAuthenticated }] = useDependencies(AppStore);
+
+        return (
+            <React.StrictMode>
+                <HashRouter>
+                    {isAuthenticated ? <AuthenticatedRoutes /> : <NotAuthenticatedRoutes />}
+                </HashRouter>
+            </React.StrictMode>
+        );
+    })
 );
+
+const Placeholder: React.FC = function() {
+    return <div>Placeholder</div>;
+};
+
+const AuthenticatedRoutes: React.FC = function() {
+    return (
+        <Switch>
+            <Route exact path="/user/dashboard" component={Placeholder} />
+            <Redirect to="/user/dashboard" />
+        </Switch>
+    );
+};
+
+const NotAuthenticatedRoutes: React.FC = function() {
+    return (
+        <Switch>
+            <Route exact path="/" component={RegisterPage} />
+            <Route exact path="/login" component={LoginPage} />
+            <Redirect to="/" />
+        </Switch>
+    );
+};
