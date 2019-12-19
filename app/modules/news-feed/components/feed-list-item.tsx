@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Card, Stack, Avatar, Popover, Button } from '@servicetitan/design-system';
+import { Card, Stack, Avatar, Popover, Button, Text } from '@servicetitan/design-system';
 import * as moment from 'moment';
 import { FeedItem } from '../../common/models/feed';
 import { Confirm } from '../../common/components/confirm';
@@ -27,45 +27,45 @@ export const FeedListItem: React.FC<{
     return (
         <Card className="m-t-4">
             <Card.Section>
-                <h3 className="m-b-2 fs-4">{item.title}</h3>
-                <p>{item.description}</p>
+                <Text className="m-b-2" size="4">
+                    {item.title}
+                </Text>
+                <Text>{item.description}</Text>
             </Card.Section>
             <Card.Section light>
                 <Stack direction="row" justifyContent="space-between">
                     <Stack direction="row">
                         <Avatar name={author.login} />
                         <Stack direction="column" className="m-l-2">
-                            <p>{author.login}</p>
-                            <p className="fs-1 m-t-1">{moment(item.createdAt).fromNow()}</p>
+                            <Text size="2">{author.login}</Text>
+                            <Text size="1">{moment(item.createdAt).fromNow()}</Text>
                         </Stack>
                     </Stack>
-                    <div>
-                        <Popover
-                            open={open}
-                            trigger={
-                                <Button fill="none" onClick={togglePopover} iconName="more_horiz">
-                                    <></>
-                                </Button>
-                            }
-                            direction="br"
-                            width="auto"
-                            padding="s"
-                            sharp
-                        >
-                            <div>
-                                <Button fill="none" type="button" onClick={editItem}>
-                                    Edit
-                                </Button>
-                                <Confirm onConfirm={deleteItem}>
-                                    {handler => (
-                                        <Button fill="none" type="button" onClick={handler}>
-                                            Delete
-                                        </Button>
-                                    )}
-                                </Confirm>
-                            </div>
-                        </Popover>
-                    </div>
+                    <Popover
+                        open={open}
+                        trigger={
+                            <Button fill="none" onClick={togglePopover} iconName="more_horiz">
+                                <></>
+                            </Button>
+                        }
+                        direction="br"
+                        width="auto"
+                        padding="s"
+                        sharp
+                    >
+                        <div>
+                            <Button fill="none" type="button" onClick={editItem}>
+                                Edit
+                            </Button>
+                            <Confirm onConfirm={deleteItem}>
+                                {handler => (
+                                    <Button fill="none" type="button" onClick={handler}>
+                                        Delete
+                                    </Button>
+                                )}
+                            </Confirm>
+                        </div>
+                    </Popover>
                 </Stack>
             </Card.Section>
         </Card>
