@@ -18,25 +18,18 @@ export class NewsFeedPage extends React.Component<{}> {
     @injectDependency(FeedStore)
     private feedStore!: FeedStore;
 
-    constructor(props: {}) {
-        super(props);
-
-        this.deleteItem = this.deleteItem.bind(this);
-        this.editItem = this.editItem.bind(this);
-    }
-
     componentDidMount() {
         this.feedStore.loadFeed();
     }
 
-    deleteItem(item: FeedItem) {
+    deleteItem = (item: FeedItem) => {
         this.feedStore.removeFeedItem(item.id);
-    }
+    };
 
-    editItem(item: FeedItem) {
+    editItem = (item: FeedItem) => {
         this.feedStore.setEditItemData(item);
         this.feedStore.toggleEditModal();
-    }
+    };
 
     renderModal(
         title: string,
