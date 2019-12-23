@@ -10,7 +10,7 @@ import { observer } from 'mobx-react';
 import { AppStore } from './modules/common/stores/app.store';
 import { LoginPage } from './modules/auth/components/login-page';
 import { UsersGridPage } from './modules/users/components/users-grid-page';
-import { MainLayout } from './modules/common/components/main-layout';
+import { NewsFeedPage } from './modules/news-feed/components/news-feed-page';
 
 configure({ enforceActions: 'observed' });
 
@@ -30,19 +30,11 @@ export const App: React.FC = provide({
     })
 );
 
-const Placeholder: React.FC = function() {
-    return (
-        <MainLayout>
-            <div>Placeholder</div>
-        </MainLayout>
-    );
-};
-
 const AuthenticatedRoutes: React.FC = function() {
     return (
         <Switch>
             <Route exact path="/users" component={UsersGridPage} />
-            <Route exact path="/feed" component={Placeholder} />
+            <Route exact path="/feed" component={NewsFeedPage} />
             <Redirect to="/users" />
         </Switch>
     );
