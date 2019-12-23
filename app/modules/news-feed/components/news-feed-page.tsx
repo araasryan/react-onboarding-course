@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { injectDependency, provide } from '@servicetitan/react-ioc';
+import { provide, useDependencies } from '@servicetitan/react-ioc';
 import { FeedStore, EditFormType, CreateFormType } from '../stores/feed.store';
 import { MainLayout } from '../../common/components/main-layout';
 import { Button, Modal, Form, ButtonGroup } from '@servicetitan/design-system';
@@ -10,58 +10,56 @@ import { FeedList } from './feed-list';
 import { CreateFeedItemForm } from './create-feed-item-form';
 import { FeedItem } from '../../common/models/feed';
 
-@provide({
+export const NewsFeedPage: React.FC<{}> = provide({
     singletons: [FeedStore, FeedApi, FeedContext]
-})
-@observer
-export class NewsFeedPage extends React.Component<{}> {
-    @injectDependency(FeedStore)
-    private feedStore!: FeedStore;
+})(
+    observer(() => {
+        const [feedStore] = useDependencies(FeedStore);
 
-    componentDidMount() {
-        this.feedStore.loadFeed();
-    }
+        React.useEffect(() => {
+            console.log('effect');
+            feedStore.loadFeed();
+        }, [feedStore]);
 
-    deleteItem = (item: FeedItem) => {
-        this.feedStore.removeFeedItem(item.id);
-    };
+        const deleteItem = (item: FeedItem) => {
+            feedStore.removeFeedItem(item.id);
+        };
 
-    editItem = (item: FeedItem) => {
-        this.feedStore.setEditItemData(item);
-        this.feedStore.toggleEditModal();
-    };
+        const editItem = (item: FeedItem) => {
+            feedStore.setEditItemData(item);
+            feedStore.toggleEditModal();
+        };
 
-    renderModal(
-        title: string,
-        formState: EditFormType | CreateFormType,
-        isOpen: boolean,
-        toggleOpen: () => void,
-        save: () => void
-    ) {
-        const { title: titleField, description } = formState.$;
-        return (
-            <Modal open={isOpen}>
-                <Modal.Header title={title} />
-                <Form onSubmit={save}>
-                    <Modal.Content>
-                        <CreateFeedItemForm title={titleField} description={description} />
-                    </Modal.Content>
-                    <Modal.Footer>
-                        <ButtonGroup className="justify-content-between">
-                            <Form.Button onClick={toggleOpen} type="button">
-                                Cancel
-                            </Form.Button>
-                            <Form.Button disabled={formState.hasError} type="submit" primary>
-                                Save
-                            </Form.Button>
-                        </ButtonGroup>
-                    </Modal.Footer>
-                </Form>
-            </Modal>
-        );
-    }
+        const renderModal = (
+            title: string,
+            formState: EditFormType | CreateFormType,
+            isOpen: boolean,
+            toggleOpen: () => void,
+            save: () => void
+        ) => {
+            const { title: titleField, description } = formState.$;
+            return (
+                <Modal open={isOpen}>
+                    <Modal.Header title={title} />
+                    <Form onSubmit={save}>
+                        <Modal.Content>
+                            <CreateFeedItemForm title={titleField} description={description} />
+                        </Modal.Content>
+                        <Modal.Footer>
+                            <ButtonGroup className="justify-content-between">
+                                <Form.Button onClick={toggleOpen} type="button">
+                                    Cancel
+                                </Form.Button>
+                                <Form.Button disabled={formState.hasError} type="submit" primary>
+                                    Save
+                                </Form.Button>
+                            </ButtonGroup>
+                        </Modal.Footer>
+                    </Form>
+                </Modal>
+            );
+        };
 
-    render() {
         const {
             feed,
             isCreateModalOpen,
@@ -72,7 +70,7 @@ export class NewsFeedPage extends React.Component<{}> {
             isEditModalOpen,
             toggleEditModal,
             updateFeedItem
-        } = this.feedStore;
+        } = feedStore;
         return (
             <MainLayout>
                 <div className="m-b-2 d-f justify-content-center">
@@ -80,15 +78,15 @@ export class NewsFeedPage extends React.Component<{}> {
                         Create New
                     </Button>
                 </div>
-                <FeedList data={feed} onDelete={this.deleteItem} onEdit={this.editItem} />
-                {this.renderModal(
+                <FeedList data={feed} onDelete={deleteItem} onEdit={editItem} />
+                {renderModal(
                     'Create Post',
                     createItemForm,
                     isCreateModalOpen,
                     toggleCreateModal,
                     createFeedItem
                 )}
-                {this.renderModal(
+                {renderModal(
                     'Edit Post',
                     editItemForm,
                     isEditModalOpen,
@@ -97,5 +95,5 @@ export class NewsFeedPage extends React.Component<{}> {
                 )}
             </MainLayout>
         );
-    }
-}
+    })
+);
